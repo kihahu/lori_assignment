@@ -11,6 +11,7 @@ from rest_framework.test import force_authenticate
 from users.models import CustomUser
 from books.models import Book
 
+
 # Create your tests here.
 class BookModelTest(TestCase):
 
