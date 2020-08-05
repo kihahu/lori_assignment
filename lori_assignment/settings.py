@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'books',
+    'book_rentals',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -75,8 +78,15 @@ WSGI_APPLICATION = 'lori_assignment.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST':'localhost',
+        'NAME':'lori_assignemt',
+        'USER':'',
+        'PORT':'5432',
+        'PASSWORD':'',
+        'TEST': {
+            'NAME': 'lori_assignemt_test',
+        },
     }
 }
 
@@ -118,3 +128,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = "users.CustomUser"
