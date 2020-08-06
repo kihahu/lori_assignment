@@ -39,7 +39,7 @@ class BookModelTest(TestCase):
                                 )
 
 
-    def test_Book_creation(self):
+    def test_book_creation(self):
         f = self.create_Book(
                             'Book1',
                             'Description Test',
@@ -50,7 +50,7 @@ class BookModelTest(TestCase):
         self.assertEqual(f.__str__(), f.name)
 
 
-    def test_creation_Book_nonunique_name(self):
+    def test_creation_book_nonunique_name(self):
         f = self.create_Book(
                             'Book1',
                             'Description Test',
@@ -67,18 +67,27 @@ class BookModelTest(TestCase):
     def test_creation_Book_invalid_name(self):
         with self.assertRaises(ValidationError):
             self.create_Book(
-                            'Book123456789',
+                            '',
                             'Description Test',
                             'Author Test'
                         ).full_clean()
 
 
-    def test_creation_Book_sdame_location_destination(self):
+    def test_creation_book_invalid_description(self):
+        with self.assertRaises(ValidationError):
+            self.create_Book(
+                            'Book123456789',
+                            '',
+                            'Author Test'
+                        ).full_clean()
+            
+    
+    def test_creation_book_invalid_author(self):
         with self.assertRaises(ValidationError):
             self.create_Book(
                             'Book123456789',
                             'Description Test',
-                            'Author Test'
+                            ''
                         ).full_clean()
 
 
@@ -88,7 +97,7 @@ class BookModelTest(TestCase):
 
     
     def test_create_book_api(self):
-        request = self.client.post('/api/books/create/',
+        request = self.client.post('/api/books/',
                                     json.dumps({
                                         'name':"BookT12",
                                         'description':'Description Test',
@@ -100,17 +109,17 @@ class BookModelTest(TestCase):
 
 
     def test_get_book_api(self):
-        request = self.client.get('/api/books/'+str(self.book.id)+'/')
+        request = self.client.get('/api/books/'+str(self.book.id))
         self.assertEqual(request.status_code, 200)
 
     
     def test_delete_Book_api(self):
-        request = self.client.delete('/api/books/'+str(self.book.id)+'/delete/')
+        request = self.client.delete('/api/books/'+str(self.book.id)+'/delete')
         self.assertEqual(request.status_code, 204)
 
     
     def test_update_book_api(self):
-        request = self.client.put('/api/books/'+str(self.book.id)+'/update/',
+        request = self.client.put('/api/books/'+str(self.book.id)+'/update',
                                     json.dumps({
                                         'name':"BookT12",
                                         'description':'Description Update',

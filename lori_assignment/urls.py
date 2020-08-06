@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import include
 from django.conf import settings
+from django.conf.urls import include
 from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
@@ -27,6 +27,9 @@ urlpatterns = [
     path('api-token-auth/', obtain_jwt_token),
     path('api-token-refresh/', refresh_jwt_token),
     path('api-token-verify/', verify_jwt_token),
+    path('api/accounts/', include(('users.api.urls', 'users'), namespace='users-api')),
+    path('api/books/', include(('books.api.urls', 'books'), namespace='books-api')),
+    path('api/book_rentals/', include(('book_rentals.api.urls', 'book_rentals'), namespace='book_rentals-api')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
