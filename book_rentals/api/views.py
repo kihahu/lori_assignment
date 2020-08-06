@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework import permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import BookRentalSerializer, BookRentalBalanceSerializer
+from book_rentals.api.serializers import BookRentalSerializer, BookRentalBalanceSerializer
 from book_rentals.models import Book_Rental
 
 
@@ -79,5 +79,5 @@ def get_payment(rental):
     
     if microsecond > 0 or seconds > 0:
         return int(days + 1)
-    else:
-        return int(days)
+    
+    return int(days)
