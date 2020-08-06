@@ -1,0 +1,9 @@
+# project/doctor_referral/__pycache__/*
+# project/doctor_referral/migrations/*
+*.__pycache__
+*__pycache__
+lori_assignment/__pycache__/*
+*.pyc
+db.sqlite3
+.DS_STORE
+migrations
