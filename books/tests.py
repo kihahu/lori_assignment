@@ -26,16 +26,18 @@ class BookModelTest(TestCase):
                         name="BookTest",
                         description = 'Description Test',
                         author = "Author Test",
+                        book_type = 1
             )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
 
-    def create_Book(self, name, description, author):
+    def create_Book(self, name, description, author, book_type):
         return Book.objects.create(
                                 name = name,
                                 description = description,
-                                author = author
+                                author = author,
+                                book_type = book_type
                                 )
 
 
@@ -44,6 +46,7 @@ class BookModelTest(TestCase):
                             'Book1',
                             'Description Test',
                             'Author Test',
+                            1
                         )
         self.assertTrue(isinstance(f, Book))
         self.assertTrue(f.name =="Book1")
@@ -54,13 +57,15 @@ class BookModelTest(TestCase):
         f = self.create_Book(
                             'Book1',
                             'Description Test',
-                            'Author Test'
+                            'Author Test',
+                            1
                         )
         with self.assertRaises(IntegrityError):
             self.create_Book(
                             'Book1',
                             'Description Test',
-                            'Author Test'
+                            'Author Test',
+                            1
                         ).full_clean()
 
     
@@ -69,7 +74,8 @@ class BookModelTest(TestCase):
             self.create_Book(
                             '',
                             'Description Test',
-                            'Author Test'
+                            'Author Test',
+                            1
                         ).full_clean()
 
 
@@ -78,7 +84,8 @@ class BookModelTest(TestCase):
             self.create_Book(
                             'Book123456789',
                             '',
-                            'Author Test'
+                            'Author Test',
+                            1
                         ).full_clean()
             
     
@@ -87,17 +94,18 @@ class BookModelTest(TestCase):
             self.create_Book(
                             'Book123456789',
                             'Description Test',
-                            ''
+                            '',
+                            1
                         ).full_clean()
 
 
     def test_get_books_api(self):
-        request = self.client.get('/api/books/')
+        request = self.client.get('/api/v1/books/')
         self.assertEqual(request.status_code, 200)
 
     
     def test_create_book_api(self):
-        request = self.client.post('/api/books/',
+        request = self.client.post('/api/v1/books/',
                                     json.dumps({
                                         'name':"BookT12",
                                         'description':'Description Test',
@@ -109,21 +117,62 @@ class BookModelTest(TestCase):
 
 
     def test_get_book_api(self):
-        request = self.client.get('/api/books/'+str(self.book.id))
+        request = self.client.get('/api/v1/books/'+str(self.book.id))
         self.assertEqual(request.status_code, 200)
 
     
     def test_delete_Book_api(self):
-        request = self.client.delete('/api/books/'+str(self.book.id)+'/delete')
+        request = self.client.delete('/api/v1/books/'+str(self.book.id)+'/delete')
         self.assertEqual(request.status_code, 204)
 
     
     def test_update_book_api(self):
-        request = self.client.put('/api/books/'+str(self.book.id)+'/update',
+        request = self.client.put('/api/v1/books/'+str(self.book.id)+'/update',
                                     json.dumps({
                                         'name':"BookT12",
                                         'description':'Description Update',
                                         'author':"Author Update"
+                                        }),
+                                    content_type='application/json'
+                                    )
+        self.assertEqual(request.status_code, 200)
+        
+        
+    def test_get_books_api(self):
+        request = self.client.get('/api/v2/books/')
+        self.assertEqual(request.status_code, 200)
+
+    
+    def test_create_book_api(self):
+        request = self.client.post('/api/v2/books/',
+                                    json.dumps({
+                                        'name':"BookT12",
+                                        'description':'Description Test',
+                                        'author':"Author",
+                                        'book_type':1
+                                        }),
+                                    content_type='application/json'
+                                    )
+        self.assertEqual(request.status_code, 201)
+
+
+    def test_get_book_api(self):
+        request = self.client.get('/api/v2/books/'+str(self.book.id))
+        self.assertEqual(request.status_code, 200)
+
+    
+    def test_delete_Book_api(self):
+        request = self.client.delete('/api/v2/books/'+str(self.book.id)+'/delete')
+        self.assertEqual(request.status_code, 204)
+
+    
+    def test_update_book_api(self):
+        request = self.client.put('/api/v2/books/'+str(self.book.id)+'/update',
+                                    json.dumps({
+                                        'name':"BookT12",
+                                        'description':'Description Update',
+                                        'author':"Author Update",
+                                        'book_type': 1
                                         }),
                                     content_type='application/json'
                                     )
