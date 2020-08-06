@@ -63,6 +63,19 @@ class BookRentalsModelTest(TestCase):
                             date_rented = '2020-08-01 20:08'
                             )
         
+        self.book_rentals_4 = Book_Rental.objects.create(
+                            user=self.user, 
+                            book=self.book,
+                            date_rented = '2020-08-05 20:08'
+                            )
+        
+        
+        self.book_rentals_5 = Book_Rental.objects.create(
+                            user=self.user, 
+                            book=self.book_3,
+                            date_rented = '2020-08-05 20:08'
+                            )
+        
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -125,7 +138,7 @@ class BookRentalsModelTest(TestCase):
         request = self.client.get('/api/v1/book_rentals/users/balance/'+str(self.user.id))
         request_data = json.loads(request.content)[0]
         self.assertEqual(request.status_code, 200)
-        self.assertEqual('11', request_data.get('balance'))
+        self.assertEqual('13', request_data.get('balance'))
         
         
     def test_get_book_rentals_api(self):
@@ -176,6 +189,57 @@ class BookRentalsModelTest(TestCase):
         request_data = json.loads(request.content)[0]
         self.assertEqual(request.status_code, 200)
         self.assertEqual('24.0', request_data.get('balance'))
+        
+        
+    def test_get_book_rentals_api(self):
+        request = self.client.get('/api/v3/book_rentals/')
+        self.assertEqual(request.status_code, 200)
+
+
+    def test_get_user_book_rentals_api(self):
+        request = self.client.get('/api/v3/book_rentals/users/'+str(self.user.id))
+        self.assertEqual(request.status_code, 200)
+
+
+    def test_get_book_rental_api(self):
+        request = self.client.get('/api/v3/book_rentals/'+str(self.book_rentals.ref))
+        self.assertEqual(request.status_code, 200)
+
+
+    def test_create_book_rentals_api(self):
+        request = self.client.post('/api/v3/book_rentals/create',
+                                    json.dumps({
+                                        'user':self.user.id,
+                                        'book':self.book.id
+                                        }),
+                                    content_type='application/json'
+                                    )
+        self.assertEqual(request.status_code, 201)
+
+
+    def test_update_book_rentals_api(self):
+        request = self.client.put('/api/v3/book_rentals/'+str(self.book_rentals.ref)+'/update',
+                                    json.dumps({
+                                        'user':self.user.id,
+                                        'book':self.book.id,
+                                        'status':2
+                                        }),
+                                    content_type='application/json'
+                                    )
+        self.assertEqual(request.status_code, 200)
+        
+    
+    def test_delete_book_rental_api(self):
+        request = self.client.delete('/api/v3/book_rentals/'+str(self.book_rentals.ref)+'/delete')
+        self.assertEqual(request.status_code, 204)
+        
+        
+    def test_book_rentals_balance_api_v2(self):
+        request = self.client.get('/api/v3/book_rentals/users/balance/'+str(self.user.id))
+        request_data = json.loads(request.content)[0]
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual('31.0', request_data.get('balance'))
+    
         
         
 
