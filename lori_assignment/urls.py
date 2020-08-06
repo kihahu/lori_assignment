@@ -27,9 +27,12 @@ urlpatterns = [
     path('api-token-auth/', obtain_jwt_token),
     path('api-token-refresh/', refresh_jwt_token),
     path('api-token-verify/', verify_jwt_token),
-    path('api/accounts/', include(('users.api.urls', 'users'), namespace='users-api')),
-    path('api/books/', include(('books.api.urls', 'books'), namespace='books-api')),
-    path('api/book_rentals/', include(('book_rentals.api.urls', 'book_rentals'), namespace='book_rentals-api')),
+    path('api/v1/accounts/', include(('users.api.v1.urls', 'users'), namespace='users-api')),
+    path('api/v1/books/', include(('books.api.v1.urls', 'books'), namespace='books-api')),
+    path('api/v1/book_rentals/', include(('book_rentals.api.v1.urls', 'book_rentals'), namespace='book_rentals-api')),
+    path('api/v2/books/', include(('books.api.v2.urls', 'books_v2'), namespace='books-api-v2')),
+    path('api/v2/book_rentals/', include(('book_rentals.api.v2.urls', 'book_rentals_v2'), namespace='book_rentals-api-v2')),
+    path('api/v3/book_rentals/', include(('book_rentals.api.v3.urls', 'book_rentals_v3'), namespace='book_rentals-api-v3')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
