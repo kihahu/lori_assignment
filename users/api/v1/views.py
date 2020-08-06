@@ -4,7 +4,7 @@ from rest_framework import permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib.auth.models import User
 
-from users.api.serializers import UserSerializer
+from .serializers import UserSerializer
 from users.models import CustomUser
 
 

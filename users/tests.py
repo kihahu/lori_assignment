@@ -23,12 +23,12 @@ class UserModelTest(TestCase):
 
 
     def test_api_can_resister_a_user(self):
-        response = self.client.get('/api/accounts/')
+        response = self.client.get('/api/v1/accounts/')
         self.assertEqual(response.status_code, 200) 
 
 
     def test_api_can_update_a_user(self):
-        response = self.client.put('/api/accounts/'+str(self.user.id)+'/update',
+        response = self.client.put('/api/v1/accounts/'+str(self.user.id)+'/update',
                                     json.dumps({
                                     "name": "Ahmed Yusuf",
                                     "phone": "0701874389",
@@ -39,7 +39,7 @@ class UserModelTest(TestCase):
 
 
     def test_api_can_update_a_user__invalidphone(self):
-        response = self.client.put('/api/accounts/'+str(self.user.id)+'/update',
+        response = self.client.put('/api/v1/accounts/'+str(self.user.id)+'/update',
                                     json.dumps({
                                     "name": "Ahmed Yusuf",
                                     "phone": "07018743898909",
