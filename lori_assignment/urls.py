@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/v1/book_rentals/', include(('book_rentals.api.v1.urls', 'book_rentals'), namespace='book_rentals-api')),
     path('api/v2/books/', include(('books.api.v2.urls', 'books_v2'), namespace='books-api-v2')),
     path('api/v2/book_rentals/', include(('book_rentals.api.v2.urls', 'book_rentals_v2'), namespace='book_rentals-api-v2')),
+    path('api/v3/book_rentals/', include(('book_rentals.api.v3.urls', 'book_rentals_v3'), namespace='book_rentals-api-v3')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
