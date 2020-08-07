@@ -8,8 +8,8 @@ from .serializers import UserSerializer
 from users.models import CustomUser
 
 
-class UserApiCreateView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+# class UserApiCreateView(generics.CreateAPIView):
+#     serializer_class = UserSerializer
     
     
 class UserApiListView(generics.ListCreateAPIView):

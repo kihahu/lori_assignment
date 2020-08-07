@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'books',
     'book_rentals',
-    'users'
+    'users',
+    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,12 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "users.CustomUser"
 
 SITE_ID=1
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=books,book_rentals,users',
+]
