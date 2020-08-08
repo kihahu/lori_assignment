@@ -1,0 +1,14 @@
+[run]
+omit = 
+    */migrations/*
+    *admin.py
+    *models.py
+    *validators.py
+
+
+[report]
+omit = 
+    */migrations/*
+    *admin.py
+    *models.py
+    *validators.py

@@ -22,8 +22,13 @@ class UserModelTest(TestCase):
         self.assertTrue(isinstance(self.user, CustomUser))
 
 
-    def test_api_can_resister_a_user(self):
+    def test_api_can_list_all_user(self):
         response = self.client.get('/api/v1/accounts/')
+        self.assertEqual(response.status_code, 200) 
+        
+        
+    def test_api_can_get_a_user(self):
+        response = self.client.get('/api/v1/accounts/'+str(self.user.id))
         self.assertEqual(response.status_code, 200) 
 
 
@@ -31,6 +36,17 @@ class UserModelTest(TestCase):
         response = self.client.put('/api/v1/accounts/'+str(self.user.id)+'/update',
                                     json.dumps({
                                     "name": "Ahmed Yusuf",
+                                    "phone": "0701874389",
+                                    "address": "Test"}),
+                                    content_type='application/json'
+                                    )
+        self.assertEqual(response.status_code, 200) 
+        
+        
+    def test_api_invalid_user_update(self):
+        response = self.client.put('/api/v1/accounts/'+str(self.user.id)+'/update',
+                                    json.dumps({
+                                    "name": "",
                                     "phone": "0701874389",
                                     "address": "Test"}),
                                     content_type='application/json'
@@ -47,3 +63,6 @@ class UserModelTest(TestCase):
                                     content_type='application/json'
                                     )
         self.assertEqual(response.status_code, 400) 
+        
+        
+    

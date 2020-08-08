@@ -5,21 +5,24 @@ from django.utils import timezone
 from rest_framework import permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import BookRentalSerializer, BookRentalBalanceSerializer
+from book_rentals.api.v1.serializers import BookRentalSerializer, BookRentalBalanceSerializer
 from book_rentals.models import Book_Rental
 
 
 class BookRentalApiCreateView(generics.CreateAPIView):
-    serializer_class = BookRentalSerializer
     
+    serializer_class = BookRentalSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
 class BookRentalApiListView(generics.ListCreateAPIView):
+    
     queryset = Book_Rental.objects.all()
     serializer_class = BookRentalSerializer
-
+    authentication_classes = (JSONWebTokenAuthentication, )
 
 class BookRentalApiView(generics.ListAPIView):
     serializer_class = BookRentalSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     def get_queryset(self, *args, **kwargs):
         qs = Book_Rental.objects.filter(ref=self.kwargs['book_rental_ref'])
         query = self.request.GET.get("q", None)
@@ -34,16 +37,20 @@ class BookRentalApiUpdateView(generics.UpdateAPIView):
 
     queryset = Book_Rental.objects.all()
     serializer_class = BookRentalSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
     
 class BookRentalApiDeleteView(generics.DestroyAPIView):
     
     queryset = Book_Rental.objects.all()
     serializer_class = BookRentalSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
 
 class BookRentalBalanceApiView(generics.ListAPIView):
+    
     serializer_class = BookRentalBalanceSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     def get_queryset(self, *args, **kwargs):
         user_id = self.kwargs['user_id']
         qs = Book_Rental.objects.filter(user__id=user_id)
@@ -58,7 +65,9 @@ class BookRentalBalanceApiView(generics.ListAPIView):
     
 
 class BookRentalUserListApiView(generics.ListAPIView):
+    
     serializer_class = BookRentalSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     def get_queryset(self, *args, **kwargs):
         qs = Book_Rental.objects.filter(ref=self.kwargs['user_id'])
         qs.count()

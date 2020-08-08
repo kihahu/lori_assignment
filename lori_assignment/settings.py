@@ -24,7 +24,7 @@ SECRET_KEY = ')^2a=sk%q&8$2+-09)y3tziqrmj7ke1q9$fp+k6^tic$tzmjpy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['loriassignment.herokuapp.com']
 
 # Application definition
 
@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'books',
     'book_rentals',
-    'users'
+    'users',
+    'django_nose',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +63,7 @@ ROOT_URLCONF = 'lori_assignment.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,6 +118,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser", 
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -123,11 +128,13 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static-storage"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static-storage"),
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
 
@@ -157,3 +164,14 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "users.CustomUser"
 
 SITE_ID=1
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=books,book_rentals,users',
+]
+
+LOGIN_REDIRECT_URL = '/home'

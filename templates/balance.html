@@ -1,0 +1,208 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Rent A Book</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/pricing/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/2031373993.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    {% block script %}
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+        
+        $(document).ready(function(){
+            // var query = getParameterByName('q')
+            var book_name = getParameterByName('book_name')
+            var rent_date = getParameterByName('rent_date')
+            var referList = [];
+            var nextReferralUrl;
+            function parseRefer(){
+                if (referList == 0){
+                    $("#books-list").append(
+                        "<tr>"+
+                          "<div class=\"card\">"+
+                            "<h5 class=\"card-title\" style=\"color: black\">No Books Available</h5>"+
+                          "</div>"+
+                        "</tr>"
+                      )
+                }else{
+					$.each(referList, function(key,value){
+						var ref = value.ref
+						var book_name = value.book
+            var rent_date = value.date_rented
+						console.log(ref)
+						$("#books").append(
+                          "<tr>"+
+                            "<td>"+book_name+"</td>"+
+                            "<td>"+rent_date+"</td>"+
+                          "</tr>"
+						            )
+                    })
+                }
+            }
+            function fetchReferals(url){
+                console.log("fetching...")
+                var fetchUrl;
+                if(!url){
+                    fetchUrl = "/api/v3/book_rentals/{{ id }}"
+                }else{
+                    fetchUrl = url
+                }
+                $.ajax({
+                url:fetchUrl,
+                data:{
+                'book_name':book_name,
+                'rent_date':rent_date
+                },
+                method:"GET",
+                success:function(data){
+                    referList = data
+					      console.log(data);
+                    parseRefer() 
+                },
+                error: function(data){
+                    console.log("error");
+                    console.log(data);
+                }
+                })
+            }
+            fetchReferals()
+            
+        });
+
+        $(document).ready(function(){
+          var balance = getParameterByName('balance')
+            var referList = [];
+            var nextReferralUrl;
+            function parseRefer(){
+                if (referList == 0){
+                    $("#books-balance").append(
+                        "<tr>"+
+                          "<div class=\"card\">"+
+                            "<h5 class=\"card-title\" style=\"color: black\">No Books Rented</h5>"+
+                          "</div>"+
+                        "</tr>"
+                      )
+                }else{
+					$.each(referList, function(key,value){
+						var balance = value.balance
+						$("#books-balance").append(
+                          "<tr>"+
+                            "<td>Total Balance</td>"+
+                            "<td>"+balance+"</td>"+
+                          "</tr>"
+						            )
+                    })
+                }
+            }
+            function fetchBalance(url){
+                console.log("fetching...")
+                var fetchUrl;
+                if(!url){
+                    fetchUrl = "/api/v3/book_rentals/users/balance/{{ id }}"
+                }else{
+                    fetchUrl = url
+                }
+                $.ajax({
+                url:fetchUrl,
+                data:{
+                'balance':balance
+                },
+                method:"GET",
+                success:function(data){
+                    referList = data
+					      console.log(data);
+                    parseRefer() 
+                },
+                error: function(data){
+                    console.log("error");
+                    console.log(data);
+                }
+                })
+            }
+            fetchBalance()
+        })
+    </script>
+    {% endblock script %}
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{% static 'static/rent_style.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Rent A Book</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="{% url 'home' %}?next=/">books</a>
+      </nav>
+      <a class="" href="#">Logout <i class="fas fa-sign-out-alt"></i></a>
+    </div>
+
+<main role="main">
+
+  <div class="album py-5">
+    <div class="container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Book Name</th>
+            <th scope="col">Date Rented</th>
+          </tr>
+        </thead>
+        <tbody id="books">
+          
+        </tbody>
+      </table>
+
+      <table class="table">
+        <thead id="books-balance">
+        </thead>
+      </table>
+
+
+
+    </div>
+  </div>
+
+</main>
+  
+</div>
+</body>
+</html>

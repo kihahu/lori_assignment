@@ -1,0 +1,189 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Rent A Book</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/pricing/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/2031373993.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    {% block script %}
+    <script>
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+        $(document).ready(function(){
+            // var query = getParameterByName('q')
+            var name = getParameterByName('name')
+            var description = getParameterByName('description')
+            var author = getParameterByName('author')
+            var book_type = getParameterByName('book_type')
+            var referList = [];
+            var nextReferralUrl;
+            function parseRefer(){
+                if (referList == 0){
+                    $("#flight-list").append(
+                        "<li class=\"list-group-item\">"+
+                          "<div class=\"card\">"+
+                            "<h5 class=\"card-title\" style=\"color: black\">No Flights Available</h5>"+
+                          "</div>"+
+                        "</li>"
+                      )
+                }else{
+					$.each(referList, function(key,value){
+						var id = value.id
+						var name = value.name
+						var description = value.description 
+						var author = value.author
+            var book_type = value.book_type
+						console.log(id)
+						$("#books").append(
+							"<li class=\"list-group-item\">"+
+								"<div class=\"card\">"+
+									"<h3 class=\"card-title\" style=\"color: black\">"+name+"</h5>"+
+									"<h5 class=\"card-title\" style=\"color: black\">"+ location +"<span class=\"card-text\" style=\"color: black;font-size:100%;font-weight: 300;\">"+dapart+"</span>- "+ destination +"<span class=\"card-text\" style=\"color: black;font-size:100%;font-weight: 300;\">"+ arrive +"</span></h5>"+
+									"<h2 class=\"card-title\" style=\"color: black\">"+price+"/= </h2>"+
+									"<a href=\"bookings/"+ id +"/create\" class=\"btn btn-primary\">Book</a>"+
+								"</div>"+
+							"</li>"
+						)
+                    })
+                }
+            }
+            function fetchReferals(url){
+                console.log("fetching...")
+                var fetchUrl;
+                if(!url){
+                    fetchUrl = "/api/v3/books/"
+                }else{
+                    fetchUrl = url
+                }
+                $.ajax({
+                url:fetchUrl,
+                data:{
+                'location':location,
+                'destination':destination,
+                'arrive':date,
+                'return-date':return_date
+                },
+                method:"GET",
+                success:function(data){
+                    referList = data
+					      console.log(data);
+                    parseRefer() 
+                },
+                error: function(data){
+                    console.log("error");
+                    console.log(data);
+                }
+                })
+            }
+            fetchReferals()
+        });
+    </script>
+    {% endblock script %}
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{% static 'static/rent_style.css}'%}" rel="stylesheet">
+  </head>
+  <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Rent A Book</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="{% url 'balance' %}?next=/">my balance</a>
+      </nav>
+      <a class="" href="{% url 'logout' %}?next=/">Logout <i class="fas fa-sign-out-alt"></i></a>
+    </div>
+
+<main role="main">
+
+  <div class="album py-5">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Rent</button>
+                </div>
+                <small class="text-muted">9 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Rent</button>
+                </div>
+                <small class="text-muted">9 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="card-body">
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Rent</button>
+                </div>
+                <small class="text-muted">9 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+  
+</div>
+</body>
+</html>
