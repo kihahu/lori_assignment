@@ -10,15 +10,17 @@ from book_rentals.models import Book_Rental
 
 
 class BookRentalApiCreateView(generics.CreateAPIView):
+    
     serializer_class = BookRentalSerializer
     
-    
 class BookRentalApiListView(generics.ListCreateAPIView):
+    
     queryset = Book_Rental.objects.all()
     serializer_class = BookRentalSerializer
 
 
 class BookRentalApiView(generics.ListAPIView):
+    
     serializer_class = BookRentalSerializer
     def get_queryset(self, *args, **kwargs):
         qs = Book_Rental.objects.filter(ref=self.kwargs['book_rental_ref'])
@@ -43,6 +45,7 @@ class BookRentalApiDeleteView(generics.DestroyAPIView):
     
 
 class BookRentalBalanceApiView(generics.ListAPIView):
+    
     serializer_class = BookRentalBalanceSerializer
     def get_queryset(self, *args, **kwargs):
         user_id = self.kwargs['user_id']
@@ -58,6 +61,7 @@ class BookRentalBalanceApiView(generics.ListAPIView):
     
 
 class BookRentalUserListApiView(generics.ListAPIView):
+    
     serializer_class = BookRentalSerializer
     def get_queryset(self, *args, **kwargs):
         qs = Book_Rental.objects.filter(ref=self.kwargs['user_id'])

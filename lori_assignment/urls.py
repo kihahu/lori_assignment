@@ -19,9 +19,14 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+from .views import index, home, balance
 
 
 urlpatterns = [
+    path('', index, name='index'),
+    path('home', home, name='home'),
+    path('balance', balance, name='balance'),
+    path('user/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
     path('api/rest-auth/registration/', include('rest_auth.registration.urls')),
     path('api-token-auth/', obtain_jwt_token),

@@ -8,15 +8,21 @@ from books.models import Book
 
 
 class BookApiCreateView(generics.CreateAPIView):
+    
     serializer_class = BookSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
     
 class BookApiListView(generics.ListCreateAPIView):
+    
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = (JSONWebTokenAuthentication, )
 
 
 class BookApiView(generics.ListAPIView):
+    
     serializer_class = BookSerializer
     def get_queryset(self, *args, **kwargs):
         qs = Book.objects.filter(id=self.kwargs['book_id'])
@@ -32,11 +38,13 @@ class BookApiUpdateView(generics.UpdateAPIView):
 
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
     
 class BookApiDeleteView(generics.DestroyAPIView):
     
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    authentication_classes = (JSONWebTokenAuthentication, )
     
     
