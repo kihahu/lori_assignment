@@ -5,7 +5,7 @@ from django.utils import timezone
 from rest_framework import permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import BookRentalSerializer, BookRentalBalanceSerializer
+from book_rentals.api.v1.serializers import BookRentalSerializer, BookRentalBalanceSerializer
 from book_rentals.models import Book_Rental
 
 

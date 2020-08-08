@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework import permissions
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from .serializers import BookSerializer
+from books.api.v1.serializers import BookSerializer
 from books.models import Book
 
 

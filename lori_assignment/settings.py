@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'book_rentals',
     'users',
     'django_nose',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -127,11 +128,13 @@ REST_FRAMEWORK = {
     ),
 }
 
+
+
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static-storage"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static-storage"),
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static-serve")
 
