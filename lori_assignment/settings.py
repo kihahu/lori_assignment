@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'lori_assignment.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST':'localhost',
-        'NAME':'lori_assignemt',
-        'USER':'myuser',
-        'PORT':'5432',
-        'PASSWORD':'mypass',
+        'HOST':os.getenv('HOST'),
+        'NAME':os.getenv('NAME'),
+        'USER':os.getenv('USER'),
+        'PORT':os.getenv('PORT'),
+        'PASSWORD':os.getenv('PASSWORD'),
         'TEST': {
             'NAME': 'lori_assignemt_test',
         },
