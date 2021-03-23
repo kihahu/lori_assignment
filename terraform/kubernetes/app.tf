@@ -46,6 +46,40 @@ resource "kubernetes_deployment" "app" {
       }
 
       spec {
+        init_container {
+          image = "loribooks"
+          name  = "makemigrations"
+
+          env {
+            HOST = "lori-psql-db"
+            NAME = "lori_assignemt"
+            USER = resource.kubernetes_secret.lori_secret.data.username
+            PORT = "5432"
+            PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+          }
+
+          args {
+            ["makemigrations"]
+          }
+        }
+
+        init_container {
+          image = "loribooks"
+          name  = "migrate"
+
+          env {
+            HOST = "lori-psql-db"
+            NAME = "lori_assignemt"
+            USER = resource.kubernetes_secret.lori_secret.data.username
+            PORT = "5432"
+            PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+          }
+
+          args {
+            ["migrate"]
+          }
+        }
+
         container {
           image = "loribooks"
           name  = "loribooks-server"
@@ -60,6 +94,10 @@ resource "kubernetes_deployment" "app" {
             USER = resource.kubernetes_secret.lori_secret.data.username
             PORT = "5432"
             PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+          }
+
+          args {
+            ["runserver"]
           }
         }
       }
