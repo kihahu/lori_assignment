@@ -12,7 +12,7 @@ jobs:
           secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           account_id: ${{ secrets.AWS_ACCOUNT_ID }}
           repo: loribooks
-          region: eu-west-1
+          region: us-east-1
           tags: latest,${{ github.sha }}
           create_repo: true
   terraform:
