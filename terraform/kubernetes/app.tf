@@ -51,16 +51,34 @@ resource "kubernetes_deployment" "app" {
           name  = "makemigrations"
 
           env {
-            HOST = "lori-psql-db"
-            NAME = "lori_assignemt"
-            USER = resource.kubernetes_secret.lori_secret.data.username
-            PORT = "5432"
-            PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+                name = "HOST"
+                value = "lori-psql-db"
+          }
+          env {
+              name="NAME"
+              value="lori_assignemt"
+          }
+          # env {
+          #   name="USER"
+          #   value=resource.kubernetes_secret.lori_secret.data.username
+          # }
+
+          env {
+            name="PORT"
+            value="5432"
+          }   
+
+          # env {
+          #     name="PASSWORD"
+          #     value="${resource.kubernetes_secret.lori_secret.data.password}"
+          # }
+             
+          env {
+             name="NAME"
+             value="lori_assignemt"
           }
 
-          args {
-            ["makemigrations"]
-          }
+          args = ["makemigrations"]
         }
 
         init_container {
@@ -68,16 +86,35 @@ resource "kubernetes_deployment" "app" {
           name  = "migrate"
 
           env {
-            HOST = "lori-psql-db"
-            NAME = "lori_assignemt"
-            USER = resource.kubernetes_secret.lori_secret.data.username
-            PORT = "5432"
-            PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+                name = "HOST"
+                value = "lori-psql-db"
+          }
+          env {
+              name="NAME"
+              value="lori_assignemt"
+          }
+          # env {
+          #   name="USER"
+          #   value=resource.kubernetes_secret.lori_secret.data.username
+          # }
+
+          env {
+            name="PORT"
+            value="5432"
+          }   
+
+          # env {
+          #     name="PASSWORD"
+          #     value=resource.kubernetes_secret.lori_secret.data.password
+          # }
+             
+          env {
+             name="NAME"
+             value="lori_assignemt"
           }
 
-          args {
-            ["migrate"]
-          }
+
+          args = ["migrate"]
         }
 
         container {
@@ -89,16 +126,34 @@ resource "kubernetes_deployment" "app" {
           }
 
           env {
-            HOST = "lori-psql-db"
-            NAME = "lori_assignemt"
-            USER = resource.kubernetes_secret.lori_secret.data.username
-            PORT = "5432"
-            PASSWORD = resource.kubernetes_secret.lori_secret.data.password
+                name = "HOST"
+                value = "lori-psql-db"
+          }
+          env {
+              name="NAME"
+              value="lori_assignemt"
+          }
+          # env {
+          #   name="USER"
+          #   value="${resource.kubernetes_secret.lori_secret.data.username}"
+          # }
+
+          env {
+            name="PORT"
+            value="5432"
+          }   
+
+          # env {
+          #     name="PASSWORD"
+          #     value="${resource.kubernetes_secret.lori_secret.data.password}"
+          # }
+             
+          env {
+             name="NAME"
+             value="lori_assignemt"
           }
 
-          args {
-            ["runserver"]
-          }
+          args = ["runserver"]
         }
       }
     }
