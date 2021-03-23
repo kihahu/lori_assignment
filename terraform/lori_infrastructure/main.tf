@@ -1,10 +1,10 @@
 provider "aws" {
-  region  = "us-east-1"
+  region  = "us-west-1"
   profile = "default"
 }
 
 module "vpc" {
-  source                     = "./vpc"
+  source                     = "./../vpc"
   environment                = var.environment
   vpc_cidr                   = var.vpc_cidr
   vpc_name                   = var.vpc_name
@@ -18,7 +18,7 @@ module "vpc" {
 }
 
 module "eks" {
-  source                        = "./eks"
+  source                        = "./../eks"
   cluster_name                  = var.cluster_name
   environment                   = var.environment
   eks_node_group_instance_types = var.eks_node_group_instance_types
@@ -27,9 +27,9 @@ module "eks" {
   fargate_namespace             = var.fargate_namespace
 }
 
-module "kubernetes" {
-    source                              =  "./kubernetes"
-    cluster_id                          =  module.eks.cluster_id    
-    vpc_id                              =  module.vpc.vpc_id
-    cluster_name                        =  module.eks.cluster_name
-}
+# module "kubernetes" {
+#     source                              =  "./kubernetes"
+#     cluster_id                          =  module.eks.cluster_id    
+#     vpc_id                              =  module.vpc.vpc_id
+#     cluster_name                        =  module.eks.cluster_name
+# }
