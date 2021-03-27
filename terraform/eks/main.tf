@@ -94,7 +94,7 @@ resource "aws_eks_fargate_profile" "eks_fargate" {
   subnet_ids             = var.private_subnets
 
   selector {
-    namespace = "${var.fargate_namespace}"
+    namespace = var.fargate_namespace
   }
 
   

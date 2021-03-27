@@ -9,12 +9,13 @@ resource "kubernetes_namespace" "fargate" {
 
 resource "kubernetes_secret" "lori_secret" {
   metadata {
-    name = "basic-auth"
+    name = "lori-db-credentials"
+    namespace = "${kubernetes_namespace.fargate.metadata.0.name}"
   }
 
   data = {
-    username = "myuser"
-    password = "P4ssw0rd"
+    username = "loribooks"
+    password = "f01931092903ff2ff308a0606bb87b201b6ba496"
   }
 
   type = "kubernetes.io/basic-auth"
@@ -30,7 +31,7 @@ resource "kubernetes_deployment" "app" {
   }
 
   spec {
-    replicas = 2
+    replicas = 1
 
     selector {
       match_labels = {
@@ -46,77 +47,7 @@ resource "kubernetes_deployment" "app" {
       }
 
       spec {
-        init_container {
-          image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
-          name  = "makemigrations"
-
-          env {
-                name = "HOST"
-                value = "lori-psql-db"
-          }
-          env {
-              name="NAME"
-              value="lori_assignemt"
-          }
-          # env {
-          #   name="USER"
-          #   value=resource.kubernetes_secret.lori_secret.data.username
-          # }
-
-          env {
-            name="PORT"
-            value="5432"
-          }   
-
-          # env {
-          #     name="PASSWORD"
-          #     value="${resource.kubernetes_secret.lori_secret.data.password}"
-          # }
-             
-          env {
-             name="NAME"
-             value="lori_assignemt"
-          }
-
-          args = ["makemigrations"]
-        }
-
-        init_container {
-          image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
-          name  = "migrate"
-
-          env {
-                name = "HOST"
-                value = "lori-psql-db"
-          }
-          env {
-              name="NAME"
-              value="lori_assignemt"
-          }
-          # env {
-          #   name="USER"
-          #   value=resource.kubernetes_secret.lori_secret.data.username
-          # }
-
-          env {
-            name="PORT"
-            value="5432"
-          }   
-
-          # env {
-          #     name="PASSWORD"
-          #     value=resource.kubernetes_secret.lori_secret.data.password
-          # }
-             
-          env {
-             name="NAME"
-             value="lori_assignemt"
-          }
-
-
-          args = ["migrate"]
-        }
-
+        
         container {
           image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
           name  = "loribooks-server"
@@ -127,33 +58,48 @@ resource "kubernetes_deployment" "app" {
 
           env {
                 name = "HOST"
-                value = "lori-psql-db"
+                value = var.db_hostname
           }
+
           env {
-              name="NAME"
-              value="lori_assignemt"
+            name="USER"
+            value_from {
+                secret_key_ref {
+                  key  = "username"
+                  name = "${kubernetes_secret.lori_secret.metadata.0.name}"
+                }
+              }
           }
-          # env {
-          #   name="USER"
-          #   value="${resource.kubernetes_secret.lori_secret.data.username}"
-          # }
 
           env {
             name="PORT"
             value="5432"
           }   
 
-          # env {
-          #     name="PASSWORD"
-          #     value="${resource.kubernetes_secret.lori_secret.data.password}"
-          # }
+          env {
+              name="PASSWORD"
+              value_from {
+                secret_key_ref {
+                  key  = "password"
+                  name = "${kubernetes_secret.lori_secret.metadata.0.name}"
+                }
+              }
+          }
              
           env {
              name="NAME"
-             value="lori_assignemt"
+             value="lori_assignment"
           }
 
-          args = ["runserver"]
+          liveness_probe {
+            http_get {
+              path = "/"
+              port = 80
+            }
+
+            initial_delay_seconds = 3
+            period_seconds        = 3
+          }
         }
       }
     }

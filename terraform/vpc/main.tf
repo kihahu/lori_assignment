@@ -117,4 +117,15 @@ resource "aws_route_table_association" "private" {
   ]
 }
 
+resource "aws_db_subnet_group" "default" {
+  name       = "loribooks_default_db_group"
+  subnet_ids = [for s in aws_subnet.private.*.id: s]
 
+  tags = {
+    Name = "loribooks_default_db_group"
+  }
+}
+
+resource "aws_sns_topic" "lori_sns" {
+  name = "lori_sns"
+}

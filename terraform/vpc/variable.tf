@@ -25,7 +25,6 @@ variable "availability_zones_public" {
 variable "private_subnets_cidr" {
     description = "List of private subnets cidr"
 }
-
 variable "availability_zones_private" {
     description = "List of availability zones of private subnets"
 }
