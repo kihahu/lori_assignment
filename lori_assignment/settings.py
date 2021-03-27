@@ -24,7 +24,7 @@ SECRET_KEY = ')^2a=sk%q&8$2+-09)y3tziqrmj7ke1q9$fp+k6^tic$tzmjpy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['b69ee518-fargatenode-lorib-be0e-1165705763.us-east-1.elb.amazonaws.com']
 
 # Application definition
 
