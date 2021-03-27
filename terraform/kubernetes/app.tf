@@ -91,15 +91,15 @@ resource "kubernetes_deployment" "app" {
             value = "lori_assignment"
           }
 
-          liveness_probe {
-            http_get {
-              path = "/"
-              port = 8000
-            }
+          # liveness_probe {
+          #   http_get {
+          #     path = "/"
+          #     port = 8000
+          #   }
 
-            initial_delay_seconds = 3
-            period_seconds        = 3
-          }
+          #   initial_delay_seconds = 3
+          #   period_seconds        = 3
+          # }
         }
       }
     }
