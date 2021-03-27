@@ -13,3 +13,11 @@ variable "cluster_name" {
 variable "db_hostname" {
   description = "Postgres db hostname"
 }
+
+variable "private_subnets_cidr" {
+  description = "Private cidrs"
+}
+
+variable "public_subnets_cidr" {
+  description = "Public cidrs"
+}

@@ -9,8 +9,8 @@ resource "kubernetes_namespace" "fargate" {
 
 resource "kubernetes_secret" "lori_secret" {
   metadata {
-    name = "lori-db-credentials"
-    namespace = "${kubernetes_namespace.fargate.metadata.0.name}"
+    name      = "lori-db-credentials"
+    namespace = kubernetes_namespace.fargate.metadata.0.name
   }
 
   data = {
@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "app" {
   metadata {
     name      = "loribooks-server"
     namespace = "fargate-node"
-    labels    = {
+    labels = {
       app = "loribooks"
     }
   }
@@ -47,7 +47,7 @@ resource "kubernetes_deployment" "app" {
       }
 
       spec {
-        
+
         container {
           image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
           name  = "loribooks-server"
@@ -57,38 +57,38 @@ resource "kubernetes_deployment" "app" {
           }
 
           env {
-                name = "HOST"
-                value = var.db_hostname
+            name  = "HOST"
+            value = var.db_hostname
           }
 
           env {
-            name="USER"
+            name = "USER"
             value_from {
-                secret_key_ref {
-                  key  = "username"
-                  name = "${kubernetes_secret.lori_secret.metadata.0.name}"
-                }
+              secret_key_ref {
+                key  = "username"
+                name = kubernetes_secret.lori_secret.metadata.0.name
               }
+            }
           }
 
           env {
-            name="PORT"
-            value="5432"
-          }   
+            name  = "PORT"
+            value = "5432"
+          }
 
           env {
-              name="PASSWORD"
-              value_from {
-                secret_key_ref {
-                  key  = "password"
-                  name = "${kubernetes_secret.lori_secret.metadata.0.name}"
-                }
+            name = "PASSWORD"
+            value_from {
+              secret_key_ref {
+                key  = "password"
+                name = kubernetes_secret.lori_secret.metadata.0.name
               }
+            }
           }
-             
+
           env {
-             name="NAME"
-             value="lori_assignment"
+            name  = "NAME"
+            value = "lori_assignment"
           }
 
           liveness_probe {
@@ -104,7 +104,7 @@ resource "kubernetes_deployment" "app" {
       }
     }
   }
-   depends_on = [kubernetes_namespace.fargate]
+  depends_on = [kubernetes_namespace.fargate]
 
 }
 
@@ -140,15 +140,15 @@ resource "kubernetes_ingress" "app" {
       "alb.ingress.kubernetes.io/target-type" = "ip"
     }
     labels = {
-        "app" = "loribooks"
+      "app" = "loribooks"
     }
   }
 
   spec {
-      backend {
-        service_name = "loribooks-service"
-        service_port = 8000
-      }
+    backend {
+      service_name = "loribooks-service"
+      service_port = 8000
+    }
     rule {
       http {
         path {

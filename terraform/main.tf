@@ -6,9 +6,9 @@ provider "aws" {
 terraform {
   backend "s3" {
     encrypt = true
-    bucket = "loribooks-terraform-state"
-    region = "us-east-1"
-    key = "terraform-state/terraform.tfstate"
+    bucket  = "loribooks-terraform-state"
+    region  = "us-east-1"
+    key     = "terraform-state/terraform.tfstate"
   }
 }
 
@@ -73,9 +73,11 @@ module "postgresql_rds" {
 }
 
 module "kubernetes" {
-  source       = "./kubernetes"
-  cluster_id   = module.eks.cluster_id
-  vpc_id       = module.vpc.vpc_id
-  cluster_name = module.eks.cluster_name
-  db_hostname  = module.postgresql_rds.hostname
+  source               = "./kubernetes"
+  cluster_id           = module.eks.cluster_id
+  vpc_id               = module.vpc.vpc_id
+  cluster_name         = module.eks.cluster_name
+  db_hostname          = module.postgresql_rds.hostname
+  public_subnets_cidr  = var.public_subnets_cidr
+  private_subnets_cidr = var.private_subnets_cidr
 }
