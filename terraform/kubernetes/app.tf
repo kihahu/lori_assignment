@@ -92,12 +92,13 @@ resource "kubernetes_deployment" "app" {
           }
 
           liveness_probe {
-            tcp_socket {
+            http_get {
+              path = "/"
               port = 8000
             }
 
-            # initial_delay_seconds = 3
-            # period_seconds        = 3
+            initial_delay_seconds = 3
+            period_seconds        = 3
           }
         }
       }

@@ -3,6 +3,15 @@ provider "aws" {
   profile = "default"
 }
 
+terraform {
+  backend "s3" {
+    encrypt = true
+    bucket = "loribooks-terraform-state"
+    region = "us-east-1"
+    key = "terraform-state/terraform.tfstate"
+  }
+}
+
 module "vpc" {
   source                     = "./vpc"
   environment                = var.environment
