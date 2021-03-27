@@ -53,7 +53,7 @@ resource "kubernetes_deployment" "app" {
           name  = "loribooks-server"
 
           port {
-            container_port = 80
+            container_port = 8000
           }
 
           env {
@@ -92,13 +92,12 @@ resource "kubernetes_deployment" "app" {
           }
 
           liveness_probe {
-            http_get {
-              path = "/"
-              port = 80
+            tcp_socket {
+              port = 8000
             }
 
-            initial_delay_seconds = 3
-            period_seconds        = 3
+            # initial_delay_seconds = 3
+            # period_seconds        = 3
           }
         }
       }
@@ -119,8 +118,8 @@ resource "kubernetes_service" "app" {
     }
 
     port {
-      port        = 80
-      target_port = 80
+      port        = 8000
+      target_port = 8000
       protocol    = "TCP"
     }
 
@@ -147,7 +146,7 @@ resource "kubernetes_ingress" "app" {
   spec {
       backend {
         service_name = "loribooks-service"
-        service_port = 80
+        service_port = 8000
       }
     rule {
       http {
@@ -155,7 +154,7 @@ resource "kubernetes_ingress" "app" {
           path = "/"
           backend {
             service_name = "loribooks-service"
-            service_port = 80
+            service_port = 8000
           }
         }
       }
