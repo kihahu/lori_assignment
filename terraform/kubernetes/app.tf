@@ -47,7 +47,7 @@ resource "kubernetes_deployment" "app" {
 
       spec {
         init_container {
-          image = "loribooks"
+          image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
           name  = "makemigrations"
 
           env {
@@ -82,7 +82,7 @@ resource "kubernetes_deployment" "app" {
         }
 
         init_container {
-          image = "loribooks"
+          image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
           name  = "migrate"
 
           env {
@@ -118,7 +118,7 @@ resource "kubernetes_deployment" "app" {
         }
 
         container {
-          image = "loribooks"
+          image = "412299902699.dkr.ecr.us-east-1.amazonaws.com/loribooks:latest"
           name  = "loribooks-server"
 
           port {
