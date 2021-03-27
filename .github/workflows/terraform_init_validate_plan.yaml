@@ -44,7 +44,7 @@ jobs:
       - name: Terraform Apply
         uses: Yellow-Box-Software/terraform-action@v2.5
         with:
-          args: "apply --var-file=testing.tfvars -auto-approve terraform"
+          args: "apply -auto-approve --var-file=testing.tfvars terraform"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
