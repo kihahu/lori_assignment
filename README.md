@@ -72,20 +72,46 @@ $ python manage.py createsuperusers
 
 # Deployment To AWS
 This service can be deployed to aws to run as a containerized application on aws EKS service with fargate nodes to run the workloads. Deployment is achieved using terraform (version 0.14.8). This is automated to be part of the CI/CD pipeline by making use of github actions.
+
+## Infrastructure
+Opensource terraform modules have been used to create the infrastructure for the application, namely:
+- https://github.com/Harshetjain666/terraform-aws-eks-fargate-cluster.git
+- github.com/azavea/terraform-aws-postgresql-rds
+Below modifications have been carried out to meet the task of deploying the loribooks application:
+- Subnet lookup for use with kubernetes ingress and service annotations to allow the ALB targets to detect pods in all subnets:
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L1-L12
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L118
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L146
+- Container specification for deployment
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L55-L61
+- Application secret to store username and password
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L14-L26
+- Read application configs as environment variables:
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L63-L96
+- Create db subnet group to be used with postgres module
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/vpc/main.tf#L120-L127
+- Create sns needed by postgres module
+    -- https://github.com/kihahu/lori_assignment/blob/main/terraform/vpc/main.tf#L129-L131
 ## Pull Requests
 On making a PR, a github action runs and builds the docker image for the application, a terraform init, validate and plan are also perfomed. Any errors in docker build or the terraform code will result in the github action failing.
 
 ## Merge To Main
 On a PR being approved and merged to main, a github action runs to build the docker image and push it to aws ECR, a release tag of the latest code is created, terraform init and apply are then carried  out deploying the application as container using aws fargate for  on demand nodes.
 
-Note: The initial CI/CD run builds out all the infrastructure i.e
-- vpc and subnets
-- alb
-- eks cluster
-- postgres database
+Notes:
+- The initial CI/CD run builds out all the infrastructure i.e
+    - vpc and subnets
+    - alb
+    - eks cluster
+    - postgres database
 this initial run might take a long time, but subsequent imporovement changes and deploys should be fast.
+- Each PR needs to bump up the release version otherwise the on merge job will fail due to conflict with existing release tag.
+
 
 ## Known Bugs
 - The ALB (application loadbalancer) only gets deployed in the public subnets despite attempts to disable auto subnet discovery by removing this tags https://github.com/kihahu/lori_assignment/blob/main/terraform/vpc/main.tf#L23 https://github.com/kihahu/lori_assignment/blob/main/terraform/vpc/main.tf#L41 in the subnets and adding the subnets annotation to the kubernetes (eks) ingress and service objects see https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L117-L120 https://github.com/kihahu/lori_assignment/blob/main/terraform/kubernetes/app.tf#L146 . As such, a manual change needs to be applied should the infrastructure be recreated from scratch to the ALB to obtain targets from all available subnets.
 - ALB targets register as unhealthy due to returned status of 400 on calling the 8000:/ endpoint, this seems related to the Django config for allowed hosts https://github.com/kihahu/lori_assignment/blob/main/lori_assignment/settings.py#L27, the application still gets served on the url b69ee518-fargatenode-lorib-be0e-1165705763.us-east-1.elb.amazonaws.com since ALB passes traffic to the pods.
 - makemigrations migrate and runserver have been combined into one script i.e entrypoint.sh, initial plan was to have the three seperated out, with makemigrations and migrate run as init containers and runserver as the main container in the pod. But migrate fails on subsequent runs and as such the init container would fail, if the error from migrate were to be addressed, the init container design should be implemented.
+
+## Improvements
+- Include application testing to the i.e run the command `python manage.py test --with-coverage` by creating a custom docker container github action see https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action 
