@@ -36,6 +36,7 @@ jobs:
           args: "validate --var-file=terraform/testing.tfvars terraform"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
       - name: Terraform Plan
         uses: Yellow-Box-Software/terraform-action@v2.5
         with:
