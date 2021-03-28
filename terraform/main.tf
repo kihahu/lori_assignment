@@ -53,7 +53,8 @@ module "postgresql_rds" {
   auto_minor_version_upgrade = false
   multi_availability_zone    = true
   storage_encrypted          = false
-  subnet_group               = module.vpc.db_subnet_group
+  # TOD: replace with module.vpc.db_subnet_group
+  subnet_group               = "default-vpc-046da26edac788fc5"
   parameter_group            = "default.postgres11"
   monitoring_interval        = "60"
   deletion_protection        = true
