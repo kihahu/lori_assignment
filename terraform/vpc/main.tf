@@ -38,7 +38,7 @@ resource "aws_subnet" "private" {
   tags = {
 
         "kubernetes.io/cluster/${var.cluster_name}-${var.environment}" = "shared"
-        "kubernetes.io/role/internal-elb" = 1
+        "kubernetes.io/role/elb" = 1
       "Name"   = "fargate-subnet-${count.index + 1}-${var.environment}"
     "state"  = "private"
   }

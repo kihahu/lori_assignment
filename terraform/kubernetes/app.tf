@@ -1,3 +1,7 @@
+data "aws_subnet_ids" "all" {
+  vpc_id = var.vpc_id
+}
+
 resource "kubernetes_namespace" "fargate" {
   metadata {
     labels = {
@@ -31,7 +35,7 @@ resource "kubernetes_deployment" "app" {
   }
 
   spec {
-    replicas = 1
+    replicas = 3
 
     selector {
       match_labels = {
@@ -91,15 +95,13 @@ resource "kubernetes_deployment" "app" {
             value = "lori_assignment"
           }
 
-          # liveness_probe {
-          #   http_get {
-          #     path = "/"
-          #     port = 8000
-          #   }
-
-          #   initial_delay_seconds = 3
-          #   period_seconds        = 3
-          # }
+          liveness_probe {
+            exec {
+              command = ["curl http://b69ee518-fargatenode-lorib-be0e-1165705763.us-east-1.elb.amazonaws.com/"]
+            }
+            initial_delay_seconds = 3
+            period_seconds        = 3
+          }
         }
       }
     }
@@ -112,6 +114,9 @@ resource "kubernetes_service" "app" {
   metadata {
     name      = "loribooks-service"
     namespace = "fargate-node"
+    annotations = {
+      "alb.ingress.kubernetes.io/subnets" = jsonencode(data.aws_subnet_ids.all.ids)
+    }
   }
   spec {
     selector = {
@@ -138,6 +143,7 @@ resource "kubernetes_ingress" "app" {
       "kubernetes.io/ingress.class"           = "alb"
       "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
       "alb.ingress.kubernetes.io/target-type" = "ip"
+      "alb.ingress.kubernetes.io/subnets" = jsonencode(data.aws_subnet_ids.all.ids)
     }
     labels = {
       "app" = "loribooks"
