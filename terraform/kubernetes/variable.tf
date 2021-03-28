@@ -21,3 +21,7 @@ variable "private_subnets_cidr" {
 variable "public_subnets_cidr" {
   description = "Public cidrs"
 }
+
+variable "db_password" {
+  description = "Database password"
+}

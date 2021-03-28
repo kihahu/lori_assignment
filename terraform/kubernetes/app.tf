@@ -19,7 +19,7 @@ resource "kubernetes_secret" "lori_secret" {
 
   data = {
     username = "loribooks"
-    password = "f01931092903ff2ff308a0606bb87b201b6ba496"
+    password = var.db_password
   }
 
   type = "kubernetes.io/basic-auth"
