@@ -20,9 +20,8 @@ jobs:
           release_name: Release release-v0.0.3
           body: |
             Changes in this Release
-            - Dockerize loribooks application.
-            - Create infrastructure using terraform (eks and fargate nodes).
-            - Add github actions ci/cd.
+            - Use static DB subnet_group
+            - Bump up release version
           draft: false
           prerelease: false
   docker:
