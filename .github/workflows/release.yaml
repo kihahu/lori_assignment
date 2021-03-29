@@ -1,8 +1,8 @@
 name: 'Lori Books CI/CD Workflow - Deploy'
 on:
   push:
-    tags:
-      - release-v*
+    branches:
+      - main
 jobs:
   release:
     name: Create Release
@@ -16,8 +16,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: release-v0.0.5
-          release_name: Release release-v0.0.5
+          tag_name: release-v0.0.6
+          release_name: Release release-v0.0.6
           body: |
             Changes in this Release
             - Add to the readme on relating to infrastructure tools
@@ -25,7 +25,6 @@ jobs:
           prerelease: false
   docker:
     runs-on: ubuntu-latest
-    needs: release
     steps:
       - uses: actions/checkout@v1
       - uses: vitr/actions-build-and-upload-to-ecs@master
